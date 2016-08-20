@@ -67,6 +67,28 @@ class BudgetController extends Controller
         return new JsonResponse($data);
     }
 
+    /**
+     * Lists all Contract entities.
+     *
+     * @Route(
+     *   "{id}/contracts.{_format}",
+     *   name="budget_contracts_json",
+     *   defaults={"_format": "json"})
+     * @Method("GET")
+     */
+    public function jsonContractAction(Category $category)
+    {
+        $em = $this->getDoctrine()->getManager();
+
+        $contracts = $em->getRepository('SowpBudgetBundle:Contract')->getContractsInCategory($category);
+        $contracts->setFetchMode("SowpBudgetBundle:Category", "category", "EAGER");
+        $data = [
+            'contracts' => $this->serializeConracts($contracts->getResult())
+        ];
+
+        return new JsonResponse($data);
+    }
+
 
     private function serialzeCategories($categories)
     {
@@ -76,6 +98,22 @@ class BudgetController extends Controller
                 "id" => $category['id'],
                 "title" => $category['title'],
                 "children" => $this->serialzeCategories($category['__children']),
+            ];
+        }
+        return $raw;
+    }
+
+    private function serializeConracts($contracts)
+    {
+        $raw = [];
+        foreach ($contracts as $contract) {
+            $raw[] = [
+                'id' => $contract->getId(),
+                'title' => $contract->getTitle(),
+                'category' => $contract->getCategory()->getTitle(),
+                'value' => $contract->getValue(),
+                'supplier' => $contract->getSupplier(),
+                'conclusion_at' => $contract->getConclusionAt(),
             ];
         }
         return $raw;

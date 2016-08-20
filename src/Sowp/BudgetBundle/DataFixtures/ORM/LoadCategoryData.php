@@ -6,7 +6,7 @@ use Doctrine\Common\DataFixtures\OrderedFixtureInterface;
 use Doctrine\Common\Persistence\ObjectManager;
 use Sowp\BudgetBundle\Entity\Category;
 
-class LoadCategoryData extends AbstractFixture
+class LoadCategoryData extends AbstractFixture implements OrderedFixtureInterface
 {
     public function load(ObjectManager $em)
     {
@@ -129,5 +129,10 @@ class LoadCategoryData extends AbstractFixture
             ->persistAsLastChildOf($members_fee, $revenues);
 
         $em->flush();
+    }
+
+    public function getOrder()
+    {
+        return 1;
     }
 }

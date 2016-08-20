@@ -4,6 +4,7 @@ namespace Sowp\BudgetBundle\Entity;
 
 use Gedmo\Mapping\Annotation as Gedmo;
 use Doctrine\ORM\Mapping as ORM;
+use Sowp\BudgetBundle\Entity\Contract;
 
 /**
  * @Gedmo\Tree(type="nested")
@@ -64,11 +65,17 @@ class Category
     private $children;
 
     /**
+     * @ORM\OneToMany(targetEntity="Contract", mappedBy="category")
+     */
+    private $contracts;
+
+    /**
      * Constructor
      */
     public function __construct()
     {
         $this->children = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->contracts = new \Doctrine\Common\Collections\ArrayCollection();
     }
 
     /**
@@ -191,7 +198,7 @@ class Category
      *
      * @return Category
      */
-    public function setRoot(\Sowp\BudgetBundle\Entity\Category $root = null)
+    public function setRoot(Category $root = null)
     {
         $this->root = $root;
 
@@ -236,5 +243,39 @@ class Category
     public function __toString()
     {
         return $this->getTitle();
+    }
+
+    /**
+     * Add contract
+     *
+     * @param \Sowp\BudgetBundle\Entity\Contract $contract
+     *
+     * @return Category
+     */
+    public function addContract(\Sowp\BudgetBundle\Entity\Contract $contract)
+    {
+        $this->contracts[] = $contract;
+
+        return $this;
+    }
+
+    /**
+     * Remove contract
+     *
+     * @param \Sowp\BudgetBundle\Entity\Contract $contract
+     */
+    public function removeContract(\Sowp\BudgetBundle\Entity\Contract $contract)
+    {
+        $this->contracts->removeElement($contract);
+    }
+
+    /**
+     * Get contracts
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getContracts()
+    {
+        return $this->contracts;
     }
 }

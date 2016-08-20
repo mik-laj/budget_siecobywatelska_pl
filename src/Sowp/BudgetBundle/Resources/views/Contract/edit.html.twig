@@ -1,0 +1,17 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <div class="pull-right">
+        <a href="{{ path('contract_index') }}" class="btn btn-default" role="button" title="Back to the list">
+            <span class="fa fa-list" aria-hidden="true"></span>
+        </a>
+        {{ form_start(delete_form, {'attr' : {'style': 'display: inline-block'}} ) }}
+            <input type="submit" value="Delete" class="btn btn-danger">
+        {{ form_end(delete_form) }}
+    </div>
+    <h1>Contract edit</h1>
+
+    {{ form_start(edit_form) }}
+        {{ form_widget(edit_form) }}
+    {{ form_end(edit_form) }}
+{% endblock %}

@@ -1,3 +1,7 @@
+sowp_budget_contract:
+    resource: "@SowpBudgetBundle/Controller/ContractController.php"
+    type:     annotation
+
 sowp_budget:
     resource: "@SowpBudgetBundle/Resources/config/routing.yml"
     prefix:   /
