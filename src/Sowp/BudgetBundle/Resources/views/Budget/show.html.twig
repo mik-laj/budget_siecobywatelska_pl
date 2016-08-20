@@ -1,0 +1,145 @@
+{% extends 'base.html.twig' %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style type="text/css">
+    .graph-wrapper {
+        position: relative;
+        width: 100%;
+        height: 0;
+    }
+    .graph {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        width: '100%';
+        height: '100%';
+    }
+    </style>
+{% endblock %}
+
+{% block body %}
+    <h1 class="page-title">Budżet</h1>
+    <h2 id="heading"></h2>
+    <div id="graph">
+        
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.17/d3.js"></script>
+    <script type="text/javascript">
+
+var w = 900,
+    h = 600,
+    x = d3.scale.linear().range([0, w]),
+    y = d3.scale.linear().range([0, h]),
+    color = d3.scale.category20(),
+    root,
+    node;
+
+var treemap = d3.layout.treemap()
+    .round(false)
+    .size([w, h])
+    .sticky(true)
+    .value(() => 1);
+    // .value(function(d) { return d.size; });
+
+var svg = d3.select('#graph')
+    .style('padding-bottom', h/w * 100 + '%')
+    .classed('graph-wrapper', true)
+    .append("svg")
+        .classed('graph', true)
+        .attr('viewBox', '0 0 900 600');
+
+var canvas = svg.append("g")
+    .attr("transform", "translate(.5,.5)");
+
+var heading = d3.select('#heading');
+
+// var back = svg
+//     .append('g')
+//     .attr("transform", "translate(30, 30)")
+//     .on('click', () => zoom(node.parent == null ? root : node.parent))
+
+// back.append('circle')
+//       .attr({"r": 20, 'fill': 'white', 'stroke-width': 1, 'stroke': 'red'});
+
+// back.append('text')
+//     .text("Back")
+//     .attr({x: "0", y: "0",'dy': '.3em', 'text-anchor': "middle"})
+
+
+d3.json("/budget/" + {{ id }} + "/categories.json", function(data) {
+  node = root = data.category;
+
+  heading.text(node.title);
+
+  var nodes = treemap.nodes(root)
+      .filter(d => !d.children || d.children.length == 0);
+
+  var cell = canvas.selectAll("g")
+      .data(nodes)
+    .enter().append("g")
+      .attr("class", "cell")
+      .attr("transform", d => "translate(" + d.x + "," + d.y + ")")
+      .on("click", d => zoom(node == d.parent ? root : d.parent))
+      // .style('opacity', );
+
+  cell.append("rect")
+      .attr({"width": d => d.dx - 1, "height": d => d.dy - 1})
+      .style("fill", d => color(d.title))
+      .style("stroke-width", "0");
+
+  cell.append("text")
+      .attr({"x": d => d.dx / 2, "y": d => d.dy / 2})
+      .attr("dy", ".35em")
+      .attr("text-anchor", "middle")
+      .text(d => d.title)
+      .style("opacity", function(d) { d.w = this.getComputedTextLength(); return d.dx > d.w ? 1 : 0; });
+
+  // d3.select(window).on("click", function() { zoom(root); });
+
+  d3.select("select").on("change", function() {
+    treemap.value(this.value == "size" ? size : count).nodes(root);
+    zoom(node);
+  });
+});
+
+function size(d) {
+  return 1;
+}
+
+function count(d) {
+  return d.children.length;
+}
+
+function zoom(d) {
+  var kx = w / d.dx, ky = h / d.dy;
+  x.domain([d.x, d.x + d.dx]);
+  y.domain([d.y, d.y + d.dy]);
+
+  heading.text(d.title);
+
+  var t = canvas.selectAll("g.cell").transition()
+      .duration(d3.event.altKey ? 7500 : 750)
+      .attr("transform", function(d) { return "translate(" + x(d.x) + "," + y(d.y) + ")"; });
+
+  t.select("rect")
+      .attr("width", d => kx * d.dx - 1)
+      .attr("height",d => ky * d.dy - 1)
+
+  t.select("text")
+      .attr("x", d => kx * d.dx / 2)
+      .attr("y", d => ky * d.dy / 2)
+      .style("opacity", d => kx * d.dx > d.w ? 1 : 0);
+
+  node = d;
+  d3.event.stopPropagation();
+}
+</script>
+{% endblock %}
+

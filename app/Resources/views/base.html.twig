@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="{{ app.request.locale }}">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1"/>
+        <title>{% block title %}Welcome{% endblock %}</title>
+
+        {% block stylesheets %}
+            <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.6/sandstone/bootstrap.min.css">
+            <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css">
+        {% endblock %}
+        <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}" />
+    </head>
+
+    <body id="{% block body_id %}{% endblock %}">
+
+        {% block header %}
+            <header>
+                <div class="navbar navbar-default navbar-static-top" role="navigation">
+                    <div class="container">
+                        <div class="navbar-header">
+                            <a class="navbar-brand" href="{{ path('homepage') }}">
+                                BIP
+                            </a>
+
+                            <button type="button" class="navbar-toggle"
+                                    data-toggle="collapse"
+                                    data-target=".navbar-collapse">
+                                <span class="sr-only">{{ 'menu.toggle_nav'|trans }}</span>
+                                <span class="icon-bar"></span>
+                                <span class="icon-bar"></span>
+                                <span class="icon-bar"></span>
+                            </button>
+                        </div>
+                        <div class="navbar-collapse collapse">
+                            <ul class="nav navbar-nav navbar-right">
+
+                                {% block header_navigation_links %}
+                                    <li>
+                                        <a href="{# {{ path('blog_index') }} #}">
+                                            <i class="fa fa-home" aria-hidden="true"></i> Główna
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="{# {{ path('blog_index') }} #}">
+                                            <i class="fa fa-feed" aria-hidden="true"></i> RSS
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="http://bip.gov.pl/">
+                                            <i class="fa fa-global" aria-hidden="true"></i> BIP.gov.pl
+                                        </a>
+                                    </li>
+
+                                    {% if is_granted('ROLE_ADMIN') %}
+                                        <li>
+                                            <a href="{# {{ path('admin_index') }} #}">
+                                                <i class="fa fa-lock" aria-hidden="true"></i> Admin
+                                            </a>
+                                        </li>
+                                    {% endif %}
+                                {% endblock %}
+                                {# 
+                                {% if app.user %}
+                                    <li>
+                                        <a href="{{ path('fos_user_security_logout') }}">
+                                            <i class="fa fa-sign-out" aria-hidden="true"></i> {{ 'menu.logout'|trans }}
+                                        </a>
+                                    </li>
+                                {% else %}
+                                    <li>
+                                        <a href="{{ path('fos_user_security_login') }}">
+                                            <i class="fa fa-sign-in" aria-hidden="true"></i> {{ 'menu.login'|trans }}
+                                        </a>
+                                    </li>
+                                {% endif %}
+                                #}
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </header>
+        {% endblock %}
+
+        <div class="container body-container">
+            {% block body %}
+                <div class="row">
+                    <div id="main" class="col-sm-9">
+                        {{ include('default/_flash_messages.html.twig') }}
+
+                        {% block main %}{% endblock %}
+                    </div>
+
+                    <div id="sidebar" class="col-sm-3">
+                        {% block sidebar %}
+                            <div class="panel panel-primary">
+                                <div class="panel-heading">
+                                    <div class="panel-title">We're awesome!</div>
+                                </div>
+                                <div class="panel-body">
+                                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Facilis delectus a ullam cupiditate mollitia omnis, reiciendis maiores quia, rerum dolore odit cum impedit consequuntur. Commodi quia eos odit in tempora.</p>
+                                </div>
+                            </div>
+                        {% endblock %}
+                    </div>
+                </div>
+            {% endblock %}
+        </div>
+
+        {% block footer %}
+            <footer>
+                <div class="container">
+                    <div class="row">
+                        <div id="footer-copyright" class="col-md-6">
+                            <p>&copy; {{ 'now'|date('Y') }} - Sieć Obywatelska Watchdog Polska</p>
+                            <p>MIT Licence</p>
+                        </div>
+                        <div id="footer-resources" class="col-md-6">
+                            <p>
+                                <a href="http://siecobywatelska.pl">Stowarzyszenie Sieć Obywatelska Watchdog Polska</a>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </footer>
+        {% endblock %}
+
+        {% block javascripts %}
+            <script
+              src="https://code.jquery.com/jquery-3.1.0.min.js"
+              integrity="sha256-cCueBR6CsyA4/9szpPfrX3s49M9vUU5BgtiJj06wt/s="
+              crossorigin="anonymous"></script>
+            <script 
+                src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" 
+                integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" 
+                crossorigin="anonymous"></script>
+        {% endblock %}
+    </body>
+</html>

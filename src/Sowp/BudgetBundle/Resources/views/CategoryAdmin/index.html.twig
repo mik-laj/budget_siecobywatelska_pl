@@ -1,0 +1,49 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <div class="pull-right">
+        <a href="{{ path('admin_category_new') }}" class="btn btn-default" title="Create a new entry">
+            <i class="fa fa-plus" aria-hidden="true"></i>
+        </a>
+        <a href="{{ path('admin_category_tree') }}" class="btn btn-default" title="View as tree">
+            <i class="fa fa-tree" aria-hidden="true"></i>
+        </a>
+    </div>
+    <h1>Category list</h1>
+
+    <table class="table table-hover">
+        <thead>
+            <tr>
+                <th>Title</th>
+                <th>Parent</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for category in categories %}
+            <tr>
+                <td>
+                    <a href="{{ path('admin_category_show', { 'id': category.id }) }}">{{ category.title }}</a></td>
+                <td>
+                    {% if category.parent %}
+                    <a href="{{ path('admin_category_show', { 'id': category.parent.id }) }}">{{ category.parent }}</a>
+                    {% else %}
+                        No parent
+                    {% endif %}
+                </td>
+                <td>
+                    <a href="{{ path('admin_category_show', { 'id': category.id }) }}" class="btn btn-default" role="button" title="Show">
+                        <i class="fa fa-eye" aria-hidden="true"></i>
+                    </a>
+                    <a href="{{ path('admin_category_edit', { 'id': category.id }) }}" class="btn btn-default" role="button" title="Edit">
+                        <i class="fa fa-pencil" aria-hidden="true"></i>
+                    </a>
+                    <a href="{{ path('admin_category_new', { 'id': category.id }) }}" class="btn btn-default" role="button" title="Add a child">
+                        <i class="fa fa-plus" aria-hidden="true"></i>
+                    </a>
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}

@@ -1,0 +1,43 @@
+{% extends 'base.html.twig' %}
+
+{% form_theme delete_form 'bootstrap_3_layout.html.twig' %}
+
+{% block body %}
+    <div class="pull-right">
+        <a href="{{ path('admin_category_index') }}" class="btn btn-default" role="button" title="Back to the list">
+            <span class="fa fa-list" aria-hidden="true"></span>
+        </a>
+        <a href="{{ path('admin_category_edit', { 'id': category.id }) }}" class="btn btn-default" role="button" title="Edit">
+            <span class="fa fa-pencil" aria-hidden="true"></span>
+        </a>
+        {{ form_start(delete_form, {'attr' : {'style': 'display: inline-block'} }) }}
+            <button type="submit" title="Delete" class="btn btn-danger">
+                <span class="fa fa-trash" aria-hidden="true"></span>
+            </button>
+        {{ form_end(delete_form) }}
+    </div>
+    <h1>Category: {{ category.title }} </h1>
+
+    <table class="table">
+        <tbody>
+            <tr>
+                <th>Id</th>
+                <td>{{ category.id }}</td>
+            </tr>
+            <tr>
+                <th>Title</th>
+                <td>{{ category.title }}</td>
+            </tr>
+            <tr>
+                <th>Parent</th>
+                <td>
+                    {% if category.parent %}
+                        <a href="{{ path('admin_category_show', { 'id': category.parent.id }) }}">{{ category.parent }}</a>
+                    {% else %}
+                        No parent
+                    {% endif %}
+                </td>
+            </tr>
+        </tbody>
+    </table>
+{% endblock %}

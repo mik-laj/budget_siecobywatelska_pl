@@ -1,0 +1,7 @@
+sowp_budget:
+    resource: "@SowpBudgetBundle/Resources/config/routing.yml"
+    prefix:   /
+
+app:
+    resource: "@AppBundle/Controller/"
+    type:     annotation

@@ -1,0 +1,14 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <div class="pull-right">
+        <a href="{{ path('admin_category_index') }}" class="btn btn-default" role="button" title="Back to the list">
+            <span class="fa fa-list" aria-hidden="true"></span>
+        </a>
+    </div>
+    <h1>Category creation</h1>
+
+    {{ form_start(form) }}
+        {{ form_widget(form) }}
+    {{ form_end(form) }}
+{% endblock %}

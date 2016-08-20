@@ -1,0 +1,35 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <div class="pull-right">
+        <a href="{{ path('admin_category_new') }}" class="btn btn-default" title="Create a new entry">
+            <i class="fa fa-plus" aria-hidden="true"></i>
+        </a>
+        <a href="{{ path('admin_category_tree') }}" class="btn btn-default" title="View as list">
+            <i class="fa fa-tree" aria-hidden="true"></i>
+        </a>
+    </div>
+    <h1>Category tree</h1>
+    <ul>
+    {% for category in categories %}
+        {{ _self.display_tree(category) }}
+    {% endfor %}
+    </ul>
+{% endblock %}
+
+
+{% macro display_tree(level) %}
+    <li>
+        {{ level.title }}
+        <a href="{{ path('admin_category_new', { 'id': level.id }) }}" title="New child">
+            <span class="fa fa-plus" aria-hidden="true"></span>
+        </a>
+    {% if level.__children|default() %}
+        <ul>
+        {% for child in level.__children %}
+            {{ _self.display_tree(child) }}
+        {% endfor %}
+        </ul>
+    {% endif %}
+    </li>
+{% endmacro %}

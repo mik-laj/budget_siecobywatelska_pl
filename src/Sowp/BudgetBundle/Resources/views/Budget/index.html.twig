@@ -1,0 +1,14 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+  <h1 class="page-title">List root category</h1>
+  {% if categories %}
+    <ul>
+    {% for category in categories %}
+      <li><a href="{{ path('budget_show', { 'id': category.id }) }}">{{ category }}</a></li>
+    {% endfor %}
+    </ul>
+  {% else %}
+      
+  {% endif %}
+{% endblock %}

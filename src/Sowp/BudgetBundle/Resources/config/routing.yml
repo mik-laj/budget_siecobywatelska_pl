@@ -1,0 +1,11 @@
+sowp_budget_admin_category:
+    resource: "@SowpBudgetBundle/Controller/AdminCategoryController.php"
+    type:     annotation
+    prefix: /admin
+
+sowp_budget_category:
+    resource: "@SowpBudgetBundle/Controller/BudgetController.php"
+    type:     annotation
+    prefix: /budget
+
+
