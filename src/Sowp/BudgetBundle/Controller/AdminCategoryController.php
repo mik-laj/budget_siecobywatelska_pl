@@ -6,6 +6,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sowp\BudgetBundle\Entity\Category;
 use Sowp\BudgetBundle\Form\CategoryType;
+use Sowp\BudgetBundle\Repository\CategoryRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\HttpFoundation\Request;
@@ -22,6 +23,8 @@ class AdminCategoryController extends Controller
      *
      * @Route("/", name="admin_category_index")
      * @Method("GET")
+     * @param Request $request
+     * @return \Symfony\Component\HttpFoundation\Response
      */
     public function indexAction(Request $request)
     {
@@ -51,7 +54,9 @@ class AdminCategoryController extends Controller
     {
         $em = $this->getDoctrine()->getManager();
 
-        $categories = $em->getRepository('SowpBudgetBundle:Category')->childrenHierarchy();
+        /** @var CategoryRepository $repo */
+        $repo = $em->getRepository('SowpBudgetBundle:Category');
+        $categories = $repo->childrenHierarchy();
 
         return $this->render('SowpBudgetBundle:CategoryAdmin:tree.html.twig', array(
             'categories' => $categories,
@@ -63,6 +68,9 @@ class AdminCategoryController extends Controller
      *
      * @Route("/new/{id}", name="admin_category_new", defaults={"id" = -1})
      * @Method({"GET", "POST"})
+     * @param Request $request
+     * @param Category $parent
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
      */
     public function newAction(Request $request, Category $parent = null)
     {
@@ -80,13 +88,13 @@ class AdminCategoryController extends Controller
             $em->persist($category);
             $em->flush();
 
-            return $this->redirectToRoute('category_show', array('id' => $category->getId()));
+            return $this->redirectToRoute('category_show', ['id' => $category->getId()]);
         }
 
-        return $this->render('SowpBudgetBundle:CategoryAdmin:new.html.twig', array(
+        return $this->render('SowpBudgetBundle:CategoryAdmin:new.html.twig', [
             'category' => $category,
             'form' => $form->createView(),
-        ));
+        ]);
     }
 
     /**
@@ -94,15 +102,17 @@ class AdminCategoryController extends Controller
      *
      * @Route("/{id}", name="admin_category_show")
      * @Method("GET")
+     * @param Category $category
+     * @return \Symfony\Component\HttpFoundation\Response
      */
     public function showAction(Category $category)
     {
         $deleteForm = $this->createDeleteForm($category);
 
-        return $this->render('SowpBudgetBundle:CategoryAdmin:show.html.twig', array(
+        return $this->render('SowpBudgetBundle:CategoryAdmin:show.html.twig', [
             'category' => $category,
             'delete_form' => $deleteForm->createView(),
-        ));
+        ]);
     }
 
     /**
@@ -110,6 +120,9 @@ class AdminCategoryController extends Controller
      *
      * @Route("/{id}/edit", name="admin_category_edit")
      * @Method({"GET", "POST"})
+     * @param Request $request
+     * @param Category $category
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
      */
     public function editAction(Request $request, Category $category)
     {
@@ -123,14 +136,14 @@ class AdminCategoryController extends Controller
             $em->persist($category);
             $em->flush();
 
-            return $this->redirectToRoute('category_edit', array('id' => $category->getId()));
+            return $this->redirectToRoute('category_edit', ['id' => $category->getId()]);
         }
 
-        return $this->render('SowpBudgetBundle:CategoryAdmin:edit.html.twig', array(
+        return $this->render('SowpBudgetBundle:CategoryAdmin:edit.html.twig', [
             'category' => $category,
             'edit_form' => $editForm->createView(),
             'delete_form' => $deleteForm->createView(),
-        ));
+        ]);
     }
 
     /**
@@ -138,6 +151,9 @@ class AdminCategoryController extends Controller
      *
      * @Route("/{id}", name="admin_category_delete")
      * @Method("DELETE")
+     * @param Request $request
+     * @param Category $category
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse
      */
     public function deleteAction(Request $request, Category $category)
     {
@@ -163,7 +179,7 @@ class AdminCategoryController extends Controller
     private function createDeleteForm(Category $category)
     {
         return $this->createFormBuilder()
-            ->setAction($this->generateUrl('admin_category_delete', array('id' => $category->getId())))
+            ->setAction($this->generateUrl('admin_category_delete', ['id' => $category->getId()]))
             ->setMethod('DELETE')
             ->getForm()
         ;

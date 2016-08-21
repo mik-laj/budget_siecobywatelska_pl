@@ -1,7 +1,8 @@
 <?php
 namespace Sowp\BudgetBundle\Repository;
 
-trait findAllQueryTrait {
+trait findAllQueryTrait
+{
 
     public function findAllQueryBuilder()
     {
@@ -12,5 +13,4 @@ trait findAllQueryTrait {
     {
         return $this->findAllQueryBuilder()->getQuery();
     }
-
 }

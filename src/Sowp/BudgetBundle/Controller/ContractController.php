@@ -6,6 +6,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sowp\BudgetBundle\Entity\Contract;
 use Sowp\BudgetBundle\Form\ContractType;
+use Sowp\BudgetBundle\Repository\ContractRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\HttpFoundation\Request;
@@ -22,13 +23,17 @@ class ContractController extends Controller
      *
      * @Route("/", name="contract_index")
      * @Method("GET")
+     * @param Request $request
+     * @return \Symfony\Component\HttpFoundation\Response
      */
     public function indexAction(Request $request)
     {
         $em = $this->getDoctrine()->getManager();
         $paginator  = $this->get('knp_paginator');
 
-        $query = $em->getRepository('SowpBudgetBundle:Contract')->getContractsWithCategoryQuery();
+        /** @var ContractRepository $repo */
+        $repo = $em->getRepository('SowpBudgetBundle:Contract');
+        $query = $repo->getContractsWithCategoryQuery();
 
         $contracts = $paginator->paginate(
             $query,
@@ -46,6 +51,8 @@ class ContractController extends Controller
      *
      * @Route("/new", name="contract_new")
      * @Method({"GET", "POST"})
+     * @param Request $request
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
      */
     public function newAction(Request $request)
     {
@@ -74,6 +81,8 @@ class ContractController extends Controller
      *
      * @Route("/{id}", name="contract_show")
      * @Method("GET")
+     * @param Contract $contract
+     * @return \Symfony\Component\HttpFoundation\Response
      */
     public function showAction(Contract $contract)
     {
@@ -90,6 +99,9 @@ class ContractController extends Controller
      *
      * @Route("/{id}/edit", name="contract_edit")
      * @Method({"GET", "POST"})
+     * @param Request $request
+     * @param Contract $contract
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
      */
     public function editAction(Request $request, Contract $contract)
     {
@@ -119,6 +131,9 @@ class ContractController extends Controller
      *
      * @Route("/{id}", name="contract_delete")
      * @Method("DELETE")
+     * @param Request $request
+     * @param Contract $contract
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse
      */
     public function deleteAction(Request $request, Contract $contract)
     {
@@ -146,7 +161,6 @@ class ContractController extends Controller
         return $this->createFormBuilder()
             ->setAction($this->generateUrl('contract_delete', array('id' => $contract->getId())))
             ->setMethod('DELETE')
-            ->getForm()
-        ;
+            ->getForm();
     }
 }

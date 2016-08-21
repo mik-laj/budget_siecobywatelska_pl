@@ -4,9 +4,12 @@ namespace Sowp\BudgetBundle\Controller;
 
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Sowp\BudgetBundle\Entity\Category;
+use Sowp\BudgetBundle\Entity\Contract;
+use Sowp\BudgetBundle\Repository\CategoryRepository;
+use Sowp\BudgetBundle\Repository\ContractRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\JsonResponse;
-use Sowp\BudgetBundle\Entity\Category;
 
 /**
  * Budget controller.
@@ -25,7 +28,9 @@ class BudgetController extends Controller
     {
         $em = $this->getDoctrine()->getManager();
 
-        $categories = $em->getRepository('SowpBudgetBundle:Category')->getRootNodes();
+        /** @var CategoryRepository $repo */
+        $repo = $em->getRepository('SowpBudgetBundle:Category');
+        $categories = $repo->getRootNodes();
 
         return $this->render('SowpBudgetBundle:Budget:index.html.twig', [
             'categories' => $categories
@@ -37,6 +42,8 @@ class BudgetController extends Controller
      *
      * @Route("/{id}", name="budget_show")
      * @Method("GET")
+     * @param Category $category
+     * @return \Symfony\Component\HttpFoundation\Response
      */
     public function showAction(Category $category)
     {
@@ -53,15 +60,19 @@ class BudgetController extends Controller
      *   name="budget_categories_json",
      *   defaults={"_format": "json"})
      * @Method("GET")
+     * @param Category $category
+     * @return JsonResponse
      */
     public function jsonCategoriesAction(Category $category)
     {
         $em = $this->getDoctrine()->getManager();
 
-        $categories = $em->getRepository('SowpBudgetBundle:Category')->childrenHierarchy($category, false, [], true);
+        /** @var CategoryRepository $repo */
+        $repo = $em->getRepository('SowpBudgetBundle:Category');
+        $categories = $repo->childrenHierarchy($category, false, [], true);
 
         $data = [
-            'category' => $this->serialzeCategories($categories)[0]
+            'category' => $this->serializeCategories($categories)[0]
         ];
 
         return new JsonResponse($data);
@@ -75,35 +86,48 @@ class BudgetController extends Controller
      *   name="budget_contracts_json",
      *   defaults={"_format": "json"})
      * @Method("GET")
+     * @param Category $category
+     * @return JsonResponse
      */
     public function jsonContractAction(Category $category)
     {
         $em = $this->getDoctrine()->getManager();
 
-        $contracts = $em->getRepository('SowpBudgetBundle:Contract')->getContractsInCategory($category);
+        /** @var ContractRepository $repo */
+        $repo = $em->getRepository('SowpBudgetBundle:Contract');
+        $contracts = $repo->getContractsInCategoryQuery($category);
         $contracts->setFetchMode("SowpBudgetBundle:Category", "category", "EAGER");
         $data = [
-            'contracts' => $this->serializeConracts($contracts->getResult())
+            'contracts' => $this->serializeContracts($contracts->getResult())
         ];
 
         return new JsonResponse($data);
     }
 
 
-    private function serialzeCategories($categories)
+    /**
+     * @param array $categories
+     * @return array
+     */
+    private function serializeCategories(array $categories)
     {
         $raw = [];
         foreach ($categories as $category) {
             $raw[] = [
                 "id" => $category['id'],
                 "title" => $category['title'],
-                "children" => $this->serialzeCategories($category['__children']),
+                "children" => $this->serializeCategories($category['__children']),
             ];
         }
         return $raw;
     }
 
-    private function serializeConracts($contracts)
+
+    /**
+     * @param Contract[] $contracts
+     * @return array
+     */
+    private function serializeContracts(array $contracts)
     {
         $raw = [];
         foreach ($contracts as $contract) {

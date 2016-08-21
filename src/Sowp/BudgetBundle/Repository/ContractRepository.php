@@ -3,6 +3,7 @@
 namespace Sowp\BudgetBundle\Repository;
 
 use Doctrine\ORM\EntityRepository;
+use Doctrine\ORM\Query;
 use Sowp\BudgetBundle\Entity\Category;
 use Sowp\BudgetBundle\Entity\Contract;
 
@@ -16,16 +17,30 @@ class ContractRepository extends EntityRepository
 {
     use findAllQueryTrait;
 
-    public function getContractsWithCategoryQuery() { 
-        return $this->_em->createQuery("SELECT a, cat FROM Sowp\BudgetBundle\Entity\Contract a JOIN a.category cat");
+    public function getContractsWithCategoryQuery()
+    {
+        return $this->_em->createQuery(<<<DQL
+        SELECT 
+            a, 
+            cat 
+        FROM 
+            Sowp\BudgetBundle\Entity\Contract a JOIN a.category cat
+DQL
+        );
     }
 
-    public function getContractsWithCategory() { 
+    public function getContractsWithCategory()
+    {
         return $this->getContractsWithCategoryQuery()->getResult();
     }
 
-    public function getContractsInCategory(Category $category) {
-        return $this->getEntityManager()->createQuery("
+    /**
+     * @param Category $category
+     * @return Query
+     */
+    public function getContractsInCategoryQuery(Category $category)
+    {
+        return $this->getEntityManager()->createQuery(<<<DQL
             SELECT 
                 c 
             FROM 
@@ -36,8 +51,19 @@ class ContractRepository extends EntityRepository
                 c.category = node.id AND
                 node.lft BETWEEN parent.lft AND parent.rgt
                     AND parent.id = ?1
-                    AND node.root = ?2")
+                    AND node.root = ?2
+DQL
+        )
         ->setParameter(1, $category->getId())
         ->setParameter(2, $category->getRoot()->getId());
+    }
+
+    /**
+     * @param Category $category
+     * @return Contract[]
+     */
+    public function getContractsInCategory(Category $category)
+    {
+        return $this->getContractsInCategoryQuery($category)->getResult();
     }
 }
