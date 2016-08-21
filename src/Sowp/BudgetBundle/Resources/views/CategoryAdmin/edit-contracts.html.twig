@@ -3,6 +3,11 @@
 {% form_theme delete_form 'bootstrap_3_layout.html.twig' %}
 {% form_theme edit_form _self %}
 
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.6.4/css/bootstrap-datepicker3.min.css">
+{% endblock %}
+
 {% block _category_with_contracts_contracts_entry_row %}
     <tr>
         <td>
@@ -63,7 +68,6 @@
 {% endblock %}
 
 {% block body %}
-    {{  dump(edit_form) }}
     <div class="pull-right">
         <a href="{{ path('admin_category_index') }}" class="btn btn-default" role="button" title="Back to the list">
             <span class="fa fa-list" aria-hidden="true"></span>
@@ -81,6 +85,7 @@
 
 {% block javascripts %}
     {{ parent() }}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.6.4/js/bootstrap-datepicker.min.js"></script>
     <script type="text/javascript">
         var contractList = $('#category_with_contracts_contracts');
         var contractTbody = $('#category_with_contracts tbody');
@@ -98,4 +103,6 @@
             });
         })
     </script>
+
+
 {% endblock %}

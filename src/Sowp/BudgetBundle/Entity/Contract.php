@@ -24,7 +24,7 @@ class Contract
     private $category;
 
     /**
-     * @ORM\Column(type="datetime")
+     * @ORM\Column(type="date")
      */
     private $conclusionAt;
 
