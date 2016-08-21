@@ -119,38 +119,7 @@ class AdminCategoryController extends Controller
     /**
      * Displays a form to edit an existing Category entity.
      *
-     * @Route("/{id}/edit", name="admin_category_edit")
-     * @Method({"GET", "POST"})
-     * @param Request $request
-     * @param Category $category
-     * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
-     */
-    public function editAction(Request $request, Category $category)
-    {
-        $deleteForm = $this->createDeleteForm($category);
-        $editForm = $this->createForm('Sowp\BudgetBundle\Form\CategoryType', $category);
-        $editForm->add('Edit', SubmitType::class);
-        $editForm->handleRequest($request);
-
-        if ($editForm->isSubmitted() && $editForm->isValid()) {
-            $em = $this->getDoctrine()->getManager();
-            $em->persist($category);
-            $em->flush();
-
-            return $this->redirectToRoute('admin_category_edit', ['id' => $category->getId()]);
-        }
-
-        return $this->render('SowpBudgetBundle:CategoryAdmin:edit.html.twig', [
-            'category' => $category,
-            'edit_form' => $editForm->createView(),
-            'delete_form' => $deleteForm->createView(),
-        ]);
-    }
-
-    /**
-     * Displays a form to edit an existing Category entity.
-     *
-     * @Route("/{id}/edit-contracts", name="admin_category_edit_contracts")
+     * @Route("/{id}/edit-contracts", name="admin_category_edit")
      * @Method({"GET", "POST"})
      * @param Request $request
      * @param Category $category
@@ -175,7 +144,7 @@ class AdminCategoryController extends Controller
             return $this->redirectToRoute('admin_category_edit', ['id' => $category->getId()]);
         }
 
-        return $this->render('SowpBudgetBundle:CategoryAdmin:edit-contracts.html.twig', [
+        return $this->render('SowpBudgetBundle:CategoryAdmin:edit.html.twig', [
             'category' => $category,
             'edit_form' => $editForm->createView(),
             'delete_form' => $deleteForm->createView(),

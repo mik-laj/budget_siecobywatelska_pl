@@ -21,7 +21,7 @@
         <tbody>
         {% for contract in contracts %}
             <tr>
-                <td>{% if contract.conclusionAt %}{{ contract.conclusionAt|date('Y-m-d H:i:s') }}{% endif %}</td>
+                <td>{% if contract.conclusionAt %}{{ contract.conclusionAt|date('Y-m-d') }}{% endif %}</td>
                 <td>{{ contract.supplier }}</td>
                 <td>{{ contract.title }}</td>
                 <td>{{ contract.value }}</td>
