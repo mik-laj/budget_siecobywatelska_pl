@@ -19,9 +19,12 @@ class ContractType extends AbstractType
             ->add('conclusionAt', DateTimeType::class)
             ->add('supplier')
             ->add('title')
-            ->add('value')
-            ->add('category')
-        ;
+            ->add('value');
+
+        if($options['with_category']){
+            $builder->add('category');
+        }
+
     }
     
     /**
@@ -29,8 +32,9 @@ class ContractType extends AbstractType
      */
     public function configureOptions(OptionsResolver $resolver)
     {
-        $resolver->setDefaults(array(
-            'data_class' => 'Sowp\BudgetBundle\Entity\Contract'
-        ));
+        $resolver->setDefaults([
+            'data_class' => 'Sowp\BudgetBundle\Entity\Contract',
+            'with_category' => true,
+        ]);
     }
 }

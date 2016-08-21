@@ -1,0 +1,101 @@
+{% extends 'base.html.twig' %}
+
+{% form_theme delete_form 'bootstrap_3_layout.html.twig' %}
+{% form_theme edit_form _self %}
+
+{% block _category_with_contracts_contracts_entry_row %}
+    <tr>
+        <td>
+            {{ form_label(form.conclusionAt, null, {'label_attr': {'class': 'sr-only'}}) }}
+            {{ form_widget(form.conclusionAt) }}
+        </td>
+        <td>
+            {{ form_label(form.supplier, null, {'label_attr': {'class': 'sr-only'}}) }}
+            {{ form_widget(form.supplier) }}
+        </td>
+        <td>
+            {{ form_label(form.title, null, {'label_attr': {'class': 'sr-only'}}) }}
+            {{ form_widget(form.title) }}
+        </td>
+        <td>
+            {{ form_label(form.value, null, {'label_attr': {'class': 'sr-only'}}) }}
+            {{ form_widget(form.value) }}
+        </td>
+    </tr>
+{% endblock %}
+
+{% block _category_with_contracts_contracts_label %}
+    <label>{{ name|humanize }}</label>
+{% endblock %}
+{% block _category_with_contracts_contracts_row %}
+    {% if prototype is defined %}
+        {% set attr = attr|merge({'data-prototype': form_row(prototype) }) %}
+    {% endif %}
+    {{  form_label(form) }}
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>
+                    Conclustion At
+                </th>
+                <th>
+                    Supplier
+                </th>
+                <th>
+                    Title
+                </th>
+                <th>
+                    Value
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            {{ block('form_widget') }}
+        </tbody>
+    </table>
+    <div class="form-group">
+        <div class="col-sm-push-2 col-sm-10 text-right">
+            <button type="button" id="category_with_contracts_contracts_Add" class="btn btn-default">
+                <i class="fa fa-plus" aria-hidden="true"></i> Add contract
+            </button>
+        </div>
+    </div>
+{% endblock %}
+
+{% block body %}
+    {{  dump(edit_form) }}
+    <div class="pull-right">
+        <a href="{{ path('admin_category_index') }}" class="btn btn-default" role="button" title="Back to the list">
+            <span class="fa fa-list" aria-hidden="true"></span>
+        </a>
+        {{ form_start(delete_form, {'attr' : {'style': 'display: inline-block'}} ) }}
+            <input type="submit" value="Delete" class="btn btn-danger">
+        {{ form_end(delete_form) }}
+    </div>
+    <h1>Category edit with contracts</h1>
+
+    {{ form_start(edit_form) }}
+        {{ form_widget(edit_form) }}
+    {{ form_end(edit_form) }}
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script type="text/javascript">
+        var contractList = $('#category_with_contracts_contracts');
+        var contractTbody = $('#category_with_contracts tbody');
+        var contractCount = contractTbody.find('tr').length;
+
+        jQuery(function() {
+            jQuery('#category_with_contracts_contracts_Add').click(function(e) {
+                e.preventDefault();
+
+                var newWidget = contractList.attr('data-prototype');
+
+                newWidget = newWidget.replace(/__name__/g, contractCount);
+                contractCount++;
+                $(newWidget).appendTo(contractTbody);
+            });
+        })
+    </script>
+{% endblock %}

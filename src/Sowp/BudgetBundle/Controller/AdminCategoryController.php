@@ -6,6 +6,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sowp\BudgetBundle\Entity\Category;
 use Sowp\BudgetBundle\Form\CategoryType;
+use Sowp\BudgetBundle\Form\CategoryWithContractsType;
 use Sowp\BudgetBundle\Repository\CategoryRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
@@ -136,7 +137,7 @@ class AdminCategoryController extends Controller
             $em->persist($category);
             $em->flush();
 
-            return $this->redirectToRoute('category_edit', ['id' => $category->getId()]);
+            return $this->redirectToRoute('admin_category_edit', ['id' => $category->getId()]);
         }
 
         return $this->render('SowpBudgetBundle:CategoryAdmin:edit.html.twig', [
@@ -146,6 +147,40 @@ class AdminCategoryController extends Controller
         ]);
     }
 
+    /**
+     * Displays a form to edit an existing Category entity.
+     *
+     * @Route("/{id}/edit-contracts", name="admin_category_edit_contracts")
+     * @Method({"GET", "POST"})
+     * @param Request $request
+     * @param Category $category
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
+     */
+    public function editContractsAction(Request $request, Category $category)
+    {
+        $deleteForm = $this->createDeleteForm($category);
+        $editForm = $this->createForm(CategoryWithContractsType::class, $category);
+        $editForm->add('Edit', SubmitType::class);
+        $editForm->handleRequest($request);
+
+        if ($editForm->isSubmitted() && $editForm->isValid()) {
+            $em = $this->getDoctrine()->getManager();
+            $em->persist($category);
+
+            foreach ($category->getContracts() as $contract){
+                $em->persist($contract->setCategory($category));
+            };
+
+            $em->flush();
+            return $this->redirectToRoute('admin_category_edit', ['id' => $category->getId()]);
+        }
+
+        return $this->render('SowpBudgetBundle:CategoryAdmin:edit-contracts.html.twig', [
+            'category' => $category,
+            'edit_form' => $editForm->createView(),
+            'delete_form' => $deleteForm->createView(),
+        ]);
+    }
     /**
      * Deletes a Category entity.
      *
