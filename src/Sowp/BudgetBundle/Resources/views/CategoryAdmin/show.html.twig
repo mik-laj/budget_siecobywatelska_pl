@@ -40,4 +40,35 @@
             </tr>
         </tbody>
     </table>
+
+    <h2>Contracts</h2>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Conclusion at</th>
+                <th>Supplier</th>
+                <th>Title</th>
+                <th>Value</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for contract in contracts %}
+            <tr>
+                <td>{% if contract.conclusionAt %}{{ contract.conclusionAt|date('Y-m-d') }}{% endif %}</td>
+                <td>{{ contract.supplier }}</td>
+                <td>{{ contract.title }}</td>
+                <td>{{ contract.value }}</td>
+                <td>
+                    <a href="{{ path('contract_show', { 'id': contract.id }) }}" title="Show" role="button" class="btn btn-primary">
+                        <i class="fa fa-eye" aria-hidden="true"></i>
+                    </a>
+                    <a href="{{ path('contract_edit', { 'id': contract.id }) }}" title="Edit" role="button" class="btn btn-primary">
+                        <i class="fa fa-pencil" aria-hidden="true"></i>
+                    </a>
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
 {% endblock %}

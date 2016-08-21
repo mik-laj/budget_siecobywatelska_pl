@@ -8,6 +8,7 @@ use Sowp\BudgetBundle\Entity\Category;
 use Sowp\BudgetBundle\Form\CategoryType;
 use Sowp\BudgetBundle\Form\CategoryWithContractsType;
 use Sowp\BudgetBundle\Repository\CategoryRepository;
+use Sowp\BudgetBundle\Repository\ContractRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\HttpFoundation\Request;
@@ -110,8 +111,13 @@ class AdminCategoryController extends Controller
     {
         $deleteForm = $this->createDeleteForm($category);
 
+        /** @var ContractRepository $repo */
+        $repo = $this->getDoctrine()->getRepository('SowpBudgetBundle:Contract');
+        $contracts = $repo->getContractsInCategory($category);
+
         return $this->render('SowpBudgetBundle:CategoryAdmin:show.html.twig', [
             'category' => $category,
+            'contracts' => $contracts,
             'delete_form' => $deleteForm->createView(),
         ]);
     }
