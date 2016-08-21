@@ -5,7 +5,7 @@ trait findAllQueryTrait {
 
     public function findAllQueryBuilder()
     {
-        return $this->createQueryBuilder('c');
+        return $this->createQueryBuilder('a');
     }
     
     public function findAllQuery()

@@ -19,6 +19,7 @@ class AppKernel extends Kernel
 
             // Budget Budnle
             new Stof\DoctrineExtensionsBundle\StofDoctrineExtensionsBundle(),
+            new Knp\Bundle\PaginatorBundle\KnpPaginatorBundle(),
             new Sowp\BudgetBundle\SowpBudgetBundle(),
         ];
 

@@ -10,10 +10,10 @@
     <table class="table table-stripped">
         <thead>
             <tr>
-                <th>Conclusionat</th>
-                <th>Supplier</th>
-                <th>Title</th>
-                <th>Value</th>
+                <th>{{ knp_pagination_sortable(contracts, 'Conclusion at', 'a.conclusionAt') }}</th>
+                <th>{{ knp_pagination_sortable(contracts, 'Supplier', 'a.supplier') }}</th>
+                <th>{{ knp_pagination_sortable(contracts, 'Title', 'a.title') }}</th>
+                <th>{{ knp_pagination_sortable(contracts, 'Value', 'a.value') }}</th>
                 <th>Category</th>
                 <th>Actions</th>
             </tr>
@@ -42,4 +42,7 @@
         {% endfor %}
         </tbody>
     </table>
+    <div class="navigation">
+        {{ knp_pagination_render(contracts) }}
+    </div>
 {% endblock %}

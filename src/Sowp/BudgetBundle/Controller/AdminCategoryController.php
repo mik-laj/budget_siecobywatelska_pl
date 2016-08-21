@@ -23,11 +23,18 @@ class AdminCategoryController extends Controller
      * @Route("/", name="admin_category_index")
      * @Method("GET")
      */
-    public function indexAction()
+    public function indexAction(Request $request)
     {
         $em = $this->getDoctrine()->getManager();
+        $paginator  = $this->get('knp_paginator');
 
-        $categories = $em->getRepository('SowpBudgetBundle:Category')->findAll();
+        $query = $em->getRepository('SowpBudgetBundle:Category')->findAllQuery();
+
+        $categories = $paginator->paginate(
+            $query,
+            $request->query->getInt('page', 1),
+            10
+        );
 
         return $this->render('SowpBudgetBundle:CategoryAdmin:index.html.twig', array(
             'categories' => $categories,

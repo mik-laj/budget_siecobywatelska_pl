@@ -1,0 +1,9 @@
+{% if direction != 'desc' %}
+    <a href="{{ options['href'] }}">
+        <i class="fa fa-sort-desc" aria-hidden="true"></i>&nbsp;{{ title }}
+    </a>
+{% else %}
+    <a href="{{ options['href'] }}">
+        <i class="fa fa-sort-asc" aria-hidden="true"></i>&nbsp;{{ title }}
+    </a>
+{% endif %}

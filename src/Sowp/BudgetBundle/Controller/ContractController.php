@@ -23,11 +23,18 @@ class ContractController extends Controller
      * @Route("/", name="contract_index")
      * @Method("GET")
      */
-    public function indexAction()
+    public function indexAction(Request $request)
     {
         $em = $this->getDoctrine()->getManager();
+        $paginator  = $this->get('knp_paginator');
 
-        $contracts = $em->getRepository('SowpBudgetBundle:Contract')->getContractsWithCategory();
+        $query = $em->getRepository('SowpBudgetBundle:Contract')->getContractsWithCategoryQuery();
+
+        $contracts = $paginator->paginate(
+            $query,
+            $request->query->getInt('page', 1),
+            10
+        );
 
         return $this->render('SowpBudgetBundle:Contract:index.html.twig', array(
             'contracts' => $contracts,

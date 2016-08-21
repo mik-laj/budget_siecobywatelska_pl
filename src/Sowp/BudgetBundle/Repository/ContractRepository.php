@@ -17,7 +17,7 @@ class ContractRepository extends EntityRepository
     use findAllQueryTrait;
 
     public function getContractsWithCategoryQuery() { 
-        return $this->_em->createQuery("SELECT c, cat FROM Sowp\BudgetBundle\Entity\Contract c JOIN c.category cat");
+        return $this->_em->createQuery("SELECT a, cat FROM Sowp\BudgetBundle\Entity\Contract a JOIN a.category cat");
     }
 
     public function getContractsWithCategory() { 
