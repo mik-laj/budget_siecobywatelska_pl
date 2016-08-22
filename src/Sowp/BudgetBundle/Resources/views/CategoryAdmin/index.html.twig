@@ -1,6 +1,11 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
+
+    <ol class="breadcrumb">
+        <li class="active">Category list</li>
+    </ol>
+
     <div class="pull-right">
         <a href="{{ path('admin_category_new') }}" class="btn btn-default" title="Create a new entry">
             <i class="fa fa-plus" aria-hidden="true"></i>
@@ -9,6 +14,7 @@
             <i class="fa fa-tree" aria-hidden="true"></i>
         </a>
     </div>
+
     <h1>Category list</h1>
 
     <table class="table table-hover">

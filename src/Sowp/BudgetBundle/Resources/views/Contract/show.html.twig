@@ -1,6 +1,11 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
+    <ol class="breadcrumb">
+        <li><a href="{{ path('contract_index') }}">Category list</a></li>
+        <li class="active">{{ contract }}</li>
+    </ol>
+
     <div class="pull-right">
         <a href="{{ path('contract_index') }}" class="btn btn-default" role="button" title="Back to the list">
             <span class="fa fa-list" aria-hidden="true"></span>
@@ -14,6 +19,7 @@
             </button>
         {{ form_end(delete_form) }}
     </div>
+
     <h1>Contract</h1>
 
     <table class="table">

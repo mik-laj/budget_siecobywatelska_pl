@@ -21,6 +21,11 @@
 {% endblock %}
 
 {% block body %}
+    <ol class="breadcrumb">
+        <li><a href="{{ path('budget_index') }}">Budget</a></li>
+        <li class="active">{{ category }}</li>
+    </ol>
+
     <h1 class="page-title">Budżet</h1>
     <h2 id="heading"></h2>
     <div id="graph">
@@ -73,7 +78,7 @@ var heading = d3.select('#heading');
 //     .attr({x: "0", y: "0",'dy': '.3em', 'text-anchor': "middle"})
 
 
-d3.json("/budget/" + {{ id }} + "/categories.json", function(data) {
+d3.json("/budget/" + {{ category.id }} + "/categories.json", function(data) {
   node = root = data.category;
 
   heading.text(node.title);

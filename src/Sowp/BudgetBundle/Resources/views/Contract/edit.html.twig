@@ -1,6 +1,12 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
+    <ol class="breadcrumb">
+        <li><a href="{{ path('contract_index') }}">Contract list</a></li>
+        <li><a href="{{ path('contract_show', {id: contract.id}) }}">{{ contract }}</a></li>
+        <li class="active">Edit</li>
+    </ol>
+
     <div class="pull-right">
         <a href="{{ path('contract_index') }}" class="btn btn-default" role="button" title="Back to the list">
             <span class="fa fa-list" aria-hidden="true"></span>
@@ -9,6 +15,7 @@
             <input type="submit" value="Delete" class="btn btn-danger">
         {{ form_end(delete_form) }}
     </div>
+
     <h1>Contract edit</h1>
 
     {{ form_start(edit_form) }}

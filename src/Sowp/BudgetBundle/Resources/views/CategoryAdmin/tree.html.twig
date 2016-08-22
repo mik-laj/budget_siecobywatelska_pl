@@ -1,15 +1,22 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
+    <ol class="breadcrumb">
+        <li><a href="{{ path('admin_category_index') }}">Category list</a></li>
+        <li class="active">Tree</li>
+    </ol>
+
     <div class="pull-right">
         <a href="{{ path('admin_category_new') }}" class="btn btn-default" title="Create a new entry">
             <i class="fa fa-plus" aria-hidden="true"></i>
         </a>
-        <a href="{{ path('admin_category_list') }}" class="btn btn-default" title="View as list">
+        <a href="{{ path('admin_category_index') }}" class="btn btn-default" title="View as list">
             <i class="fa fa-list" aria-hidden="true"></i>
         </a>
     </div>
+
     <h1>Category tree</h1>
+
     <ul>
     {% for category in categories %}
         {{ _self.display_tree(category) }}

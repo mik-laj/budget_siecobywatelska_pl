@@ -48,7 +48,7 @@ class BudgetController extends Controller
     public function showAction(Category $category)
     {
         return $this->render('SowpBudgetBundle:Budget:show.html.twig', [
-            'id' => $category->getId()
+            'category' => $category
         ]);
     }
 

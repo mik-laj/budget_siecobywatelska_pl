@@ -74,7 +74,7 @@ class AdminCategoryController extends Controller
      * @param Category $parent
      * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
      */
-    public function newAction(Request $request, Category $parent = null)
+    public function newAction(Request $request, Category $parent_cat = null)
     {
         $category = new Category();
         $form = $this->createForm('Sowp\BudgetBundle\Form\CategoryType', $category);
@@ -82,8 +82,17 @@ class AdminCategoryController extends Controller
         $form->handleRequest($request);
         
         // Set default parent
-        $form->get('parent')->setData($parent);
+        $form->get('parent')->setData($parent_cat);
 
+        if($parent_cat){
+            $em = $this->getDoctrine();
+
+            /** @var CategoryRepository $categoryRepo */
+            $categoryRepo = $em->getRepository('SowpBudgetBundle:Category');
+            $path = $categoryRepo->getPath($parent_cat);
+        }else{
+            $path = [];
+        }
 
         if ($form->isSubmitted() && $form->isValid()) {
             $em = $this->getDoctrine()->getManager();
@@ -94,6 +103,7 @@ class AdminCategoryController extends Controller
         }
 
         return $this->render('SowpBudgetBundle:CategoryAdmin:new.html.twig', [
+            'path' => $path,
             'category' => $category,
             'form' => $form->createView(),
         ]);
@@ -111,11 +121,18 @@ class AdminCategoryController extends Controller
     {
         $deleteForm = $this->createDeleteForm($category);
 
+        $em = $this->getDoctrine();
+
         /** @var ContractRepository $repo */
-        $repo = $this->getDoctrine()->getRepository('SowpBudgetBundle:Contract');
-        $contracts = $repo->getContractsInCategory($category);
+        $contractRepo = $em->getRepository('SowpBudgetBundle:Contract');
+        $contracts = $contractRepo->getContractsInCategory($category);
+
+        /** @var CategoryRepository $categoryRepo */
+        $categoryRepo = $em->getRepository('SowpBudgetBundle:Category');
+        $path = $categoryRepo->getPath($category);
 
         return $this->render('SowpBudgetBundle:CategoryAdmin:show.html.twig', [
+            'path' => $path,
             'category' => $category,
             'contracts' => $contracts,
             'delete_form' => $deleteForm->createView(),
@@ -133,13 +150,14 @@ class AdminCategoryController extends Controller
      */
     public function editContractsAction(Request $request, Category $category)
     {
+        $em = $this->getDoctrine()->getManager();
+
         $deleteForm = $this->createDeleteForm($category);
         $editForm = $this->createForm(CategoryWithContractsType::class, $category);
         $editForm->add('Edit', SubmitType::class);
         $editForm->handleRequest($request);
 
         if ($editForm->isSubmitted() && $editForm->isValid()) {
-            $em = $this->getDoctrine()->getManager();
             $em->persist($category);
 
             foreach ($category->getContracts() as $contract){
@@ -150,7 +168,12 @@ class AdminCategoryController extends Controller
             return $this->redirectToRoute('admin_category_edit', ['id' => $category->getId()]);
         }
 
+        /** @var CategoryRepository $categoryRepo */
+        $categoryRepo = $em->getRepository('SowpBudgetBundle:Category');
+        $path = $categoryRepo->getPath($category);
+
         return $this->render('SowpBudgetBundle:CategoryAdmin:edit.html.twig', [
+            'path' => $path,
             'category' => $category,
             'edit_form' => $editForm->createView(),
             'delete_form' => $deleteForm->createView(),

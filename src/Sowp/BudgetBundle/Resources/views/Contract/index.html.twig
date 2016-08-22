@@ -1,12 +1,18 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
+    <ol class="breadcrumb">
+        <li class="active">Contract list</li>
+    </ol>
+
     <div class="pull-right">
         <a href="{{ path('contract_new') }}" class="btn btn-default" title="Create a new entry">
             <i class="fa fa-plus" aria-hidden="true"></i>
         </a>
     </div>
+
     <h1>Contract list</h1>
+
     <table class="table table-stripped">
         <thead>
             <tr>

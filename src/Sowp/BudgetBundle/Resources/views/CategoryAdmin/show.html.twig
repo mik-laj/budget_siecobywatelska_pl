@@ -3,6 +3,17 @@
 {% form_theme delete_form 'bootstrap_3_layout.html.twig' %}
 
 {% block body %}
+    <ol class="breadcrumb">
+        <li><a href="{{ path('admin_category_index') }}">Category list</a></li>
+        {% for category in path %}
+            {% if loop.last %}
+                <li class="active">{{ category }}</li>
+            {% else %}
+                <li><a href="{{ path('admin_category_show', { 'id': category.id }) }}">{{ category }}</a></li>
+            {% endif %}
+        {% endfor %}
+    </ol>
+
     <div class="pull-right">
         <a href="{{ path('admin_category_index') }}" class="btn btn-default" role="button" title="Back to the list">
             <span class="fa fa-list" aria-hidden="true"></span>
@@ -16,6 +27,7 @@
             </button>
         {{ form_end(delete_form) }}
     </div>
+
     <h1>Category: {{ category.title }} </h1>
 
     <table class="table">
