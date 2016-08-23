@@ -123,14 +123,13 @@ class AdminCategoryController extends Controller
 
         $em = $this->getDoctrine();
 
-        /** @var ContractRepository $repo */
-        $contractRepo = $em->getRepository('SowpBudgetBundle:Contract');
-        $contracts = $contractRepo->getContractsInCategory($category);
-
         /** @var CategoryRepository $categoryRepo */
         $categoryRepo = $em->getRepository('SowpBudgetBundle:Category');
-        $path = $categoryRepo->getPath($category);
 
+        $contracts = $categoryRepo->getContractsInCategory($category);
+
+        $path = $categoryRepo->getPath($category);
+        
         return $this->render('SowpBudgetBundle:CategoryAdmin:show.html.twig', [
             'path' => $path,
             'category' => $category,
