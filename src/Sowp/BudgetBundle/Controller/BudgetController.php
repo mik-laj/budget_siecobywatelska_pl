@@ -93,8 +93,8 @@ class BudgetController extends Controller
     {
         $em = $this->getDoctrine()->getManager();
 
-        /** @var CategoryRepository $repo */
-        $repo = $em->getRepository('SowpBudgetBundle:Category');
+        /** @var ContractRepository $repo */
+        $repo = $em->getRepository('SowpBudgetBundle:Contract');
         $contracts = $repo->getContractsInCategoryQuery($category);
         $contracts->setFetchMode("SowpBudgetBundle:Category", "category", "EAGER");
         $data = [

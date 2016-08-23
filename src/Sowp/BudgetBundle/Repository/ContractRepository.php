@@ -3,6 +3,9 @@
 namespace Sowp\BudgetBundle\Repository;
 
 use Doctrine\ORM\EntityRepository;
+use Doctrine\ORM\Query;
+use Sowp\BudgetBundle\Entity\Category;
+use Sowp\BudgetBundle\Entity\Contract;
 
 /**
  * ContractRepository
@@ -29,5 +32,38 @@ DQL
     public function getContractsWithCategory()
     {
         return $this->getContractsWithCategoryQuery()->getResult();
+    }
+
+    /**
+     * @param Category $category
+     * @return Query
+     */
+    public function getContractsInCategoryQuery(Category $category)
+    {
+        return $this->getEntityManager()->createQuery(<<<DQL
+            SELECT 
+                c 
+            FROM 
+                SowpBudgetBundle:Contract c,
+                SowpBudgetBundle:Category node,
+                SowpBudgetBundle:Category parent 
+            WHERE 
+                c.category = node.id AND
+                node.lft BETWEEN parent.lft AND parent.rgt
+                    AND parent.id = ?1
+                    AND node.root = ?2
+DQL
+        )
+        ->setParameter(1, $category->getId())
+        ->setParameter(2, $category->getRoot()->getId());
+    }
+
+    /**
+     * @param Category $category
+     * @return Contract[]
+     */
+    public function getContractsInCategory(Category $category)
+    {
+        return $this->getContractsInCategoryQuery($category)->getResult();
     }
 }
