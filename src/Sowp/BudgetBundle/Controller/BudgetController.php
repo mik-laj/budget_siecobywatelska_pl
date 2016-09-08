@@ -2,6 +2,10 @@
 
 namespace Sowp\BudgetBundle\Controller;
 
+use Doctrine\ORM\Mapping\ClassMetadata;
+use Iterator;
+use Knp\Bundle\PaginatorBundle\Pagination\SlidingPagination;
+use Knp\Component\Pager\Paginator;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sowp\BudgetBundle\Entity\Category;
@@ -10,6 +14,7 @@ use Sowp\BudgetBundle\Repository\CategoryRepository;
 use Sowp\BudgetBundle\Repository\ContractRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
 
 /**
  * Budget controller.
@@ -89,17 +94,30 @@ class BudgetController extends Controller
      * @param Category $category
      * @return JsonResponse
      */
-    public function jsonContractAction(Category $category)
+    public function jsonContractAction(Request $request, Category $category)
     {
         $em = $this->getDoctrine()->getManager();
 
         /** @var ContractRepository $repo */
         $repo = $em->getRepository('SowpBudgetBundle:Contract');
-        $contracts = $repo->getContractsInCategoryQuery($category);
-        $contracts->setFetchMode("SowpBudgetBundle:Category", "category", "EAGER");
+        $query = $repo->getContractsInCategoryQuery($category);
+        $query = $query->setFetchMode(Category::class, "category", ClassMetadata::FETCH_EAGER);
+
+        /** @var Paginator $paginator */
+        $paginator  = $this->get('knp_paginator');
+        /** @var SlidingPagination $contracts */
+        $contracts = $paginator->paginate(
+            $query, /* query NOT result */
+            $request->query->getInt('page', 1)/*page number*/,
+            10/*limit per page*/,
+            ['distinct' => true]
+        );
+        $total = $contracts->getTotalItemCount();
+        $page_count = $contracts->getPageCount();
+
         $data = [
-            'contracts' => $this->serializeContracts($contracts->getResult())
-        ];
+            'contracts' => $this->serializeContracts($contracts)
+        ] + compact('total', 'page_count');
 
         return new JsonResponse($data);
     }
@@ -124,10 +142,10 @@ class BudgetController extends Controller
 
 
     /**
-     * @param Contract[] $contracts
+     * @param Iterator|Contract[] $contracts
      * @return array
      */
-    private function serializeContracts(array $contracts)
+    private function serializeContracts($contracts)
     {
         $raw = [];
         foreach ($contracts as $contract) {

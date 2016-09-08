@@ -44,14 +44,12 @@ DQL
             SELECT 
                 c 
             FROM 
-                SowpBudgetBundle:Contract c,
-                SowpBudgetBundle:Category node,
-                SowpBudgetBundle:Category parent 
-            WHERE 
-                c.category = node.id AND
-                node.lft BETWEEN parent.lft AND parent.rgt
+                SowpBudgetBundle:Contract c 
+                    JOIN SowpBudgetBundle:Category node WITH c.category = node
+                    JOIN SowpBudgetBundle:Category parent WITH (node.lft BETWEEN parent.lft AND parent.rgt
                     AND parent.id = ?1
-                    AND node.root = ?2
+                    AND node.root = ?2)
+                
 DQL
         )
         ->setParameter(1, $category->getId())

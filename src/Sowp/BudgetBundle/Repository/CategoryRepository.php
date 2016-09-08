@@ -3,6 +3,8 @@
 namespace Sowp\BudgetBundle\Repository;
 
 use Gedmo\Tree\Entity\Repository\NestedTreeRepository;
+use Sowp\BudgetBundle\Entity\Category;
+use Sowp\BudgetBundle\Entity\Contract;
 
 /**
  * CategoryRepository
@@ -13,4 +15,30 @@ use Gedmo\Tree\Entity\Repository\NestedTreeRepository;
 class CategoryRepository extends NestedTreeRepository
 {
     use findAllQueryTrait;
+
+    /**
+     * @param Category $category
+     * @return \Doctrine\ORM\QueryBuilder
+     */
+    public function getContractsInCategoryQueryBuilder(Category $category){
+        return $this->getChildrenQueryBuilder($category, false, null, 'ASC', false)
+            ->innerjoin(Contract::class, 'contract', Join::WITH, 'node = contract.category')->select(['contract']);
+    }
+
+    /**
+     * @param Category $category
+     * @return \Doctrine\ORM\Query
+     */
+    public function getContractsInCategoryQuery(Category $category){
+        return $this->getContractsInCategoryQueryBuilder($category)->getQuery();
+    }
+
+    /**
+     * @param Category $category
+     * @return Contract[]
+     */
+    public function getContractsInCategory(Category $category){
+        return $this->getContractsInCategoryQuery($category)->getResult();
+    }
+
 }
