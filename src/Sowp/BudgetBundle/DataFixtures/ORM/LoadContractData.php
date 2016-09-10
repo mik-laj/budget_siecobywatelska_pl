@@ -18,22 +18,15 @@ class LoadContractData extends AbstractFixture implements OrderedFixtureInterfac
         $faker = Factory::create();
 
         foreach ($categories as $category) {
-            $contract = new Contract();
-            $contract->setCategory($category);
-            $contract->setSupplier($faker->name);
-            $contract->setTitle($faker->text(255));
-            $contract->setConclusionAt($faker->dateTime);
-            $contract->setValue($faker->numberBetween(1000, 90000));
-            $em->persist($contract);
-
-            $contract = new Contract();
-            $contract->setCategory($category);
-            $contract->setSupplier($faker->name);
-            $contract->setTitle($faker->text(255));
-            $contract->setConclusionAt($faker->dateTime);
-            $contract->setValue($faker->numberBetween(1000, 90000));
-            $em->persist($contract);
-
+            for ($i = 0; $i < 4; $i ++){
+                $contract = new Contract();
+                $contract->setCategory($category);
+                $contract->setSupplier($faker->name);
+                $contract->setTitle($faker->text(255));
+                $contract->setConclusionAt($faker->dateTime);
+                $contract->setValue($faker->numberBetween(1000, 90000));
+                $em->persist($contract);
+            }
         }
         // for ($i=0; $i < 1000; $i++) {
         //     $contract = new Contract();
