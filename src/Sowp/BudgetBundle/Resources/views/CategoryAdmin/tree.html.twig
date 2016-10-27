@@ -28,8 +28,11 @@
 {% macro display_tree(level) %}
     <li>
         {{ level.title }}
+        <a href="{{ path('admin_category_show', { 'id': level.id }) }}" title="Show">
+            <i class="fa fa-eye" aria-hidden="true"></i>
+        </a>
         <a href="{{ path('admin_category_new', { 'id': level.id }) }}" title="New child">
-            <span class="fa fa-plus" aria-hidden="true"></span>
+            <i class="fa fa-plus" aria-hidden="true"></i>
         </a>
     {% if level.__children|default() %}
         <ul>

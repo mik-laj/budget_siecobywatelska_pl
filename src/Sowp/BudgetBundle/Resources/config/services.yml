@@ -1,0 +1,12 @@
+services:
+    sowp.budget.form.category.task:
+        class: Sowp\BudgetBundle\Form\CategoryType
+        arguments: ["@doctrine.orm.entity_manager"]
+        tags:
+            - { name: form.type }
+
+    sowp.budget.form.contract.task:
+        class: Sowp\BudgetBundle\Form\ContractType
+        arguments: ["@doctrine.orm.entity_manager"]
+        tags:
+            - { name: form.type }

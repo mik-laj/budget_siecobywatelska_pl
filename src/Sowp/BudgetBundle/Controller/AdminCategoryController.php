@@ -99,7 +99,7 @@ class AdminCategoryController extends Controller
             $em->persist($category);
             $em->flush();
 
-            return $this->redirectToRoute('category_show', ['id' => $category->getId()]);
+            return $this->redirectToRoute('admin_category_show', ['id' => $category->getId()]);
         }
 
         return $this->render('SowpBudgetBundle:CategoryAdmin:new.html.twig', [
@@ -199,7 +199,7 @@ class AdminCategoryController extends Controller
             $em->flush();
         }
 
-        return $this->redirectToRoute('category_index');
+        return $this->redirectToRoute('admin_category_index');
     }
 
     /**

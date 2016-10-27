@@ -5,13 +5,63 @@ namespace Sowp\BudgetBundle\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Doctrine\ORM\Mapping as ORM;
-use Sowp\BudgetBundle\Entity\Contract;
+use JMS\Serializer\Annotation as Serializer;
+use Symfony\Component\Validator\Constraints as Assert;
+use Hateoas\Configuration\Annotation as Hateoas;
 
 /**
+ *
  * @Gedmo\Tree(type="nested")
  * @ORM\Table()
- * use repository for handy tree functions
  * @ORM\Entity(repositoryClass="Sowp\BudgetBundle\Repository\CategoryRepository")
+ * @Serializer\ExclusionPolicy("ALL")
+ * @Hateoas\Relation(
+ *      "self",
+ *      href = @Hateoas\Route(
+ *          "sowp_budget_category_api_get_category",
+ *          parameters = { "id" = "expr(object.getId())" },
+ *          absolute=true
+ *      ),
+ *     exclusion=@Hateoas\Exclusion(
+ *          maxDepth=1,
+ *     )
+ * )
+ *
+ * @Hateoas\Relation(
+ *      "children",
+ *      href = @Hateoas\Route(
+ *          "sowp_budget_category_api_get_category_children",
+ *          parameters = { "id" = "expr(object.getId())" },
+ *          absolute=true
+ *      ),
+ *     exclusion=@Hateoas\Exclusion(
+ *          maxDepth=1,
+ *     )
+ * )
+ *
+ * @Hateoas\Relation(
+ *      "parent",
+ *      href = @Hateoas\Route(
+ *          "sowp_budget_category_api_get_category",
+ *          parameters = { "id" = "expr(object.getParent().getId())" },
+ *          absolute=true
+ *      ),
+ *     exclusion=@Hateoas\Exclusion(
+ *          excludeIf = "expr(null === object.getParent())"
+ *     )
+ * )
+ *
+ * @Hateoas\Relation(
+ *      "contracts",
+ *      href = @Hateoas\Route(
+ *          "sowp_budget_category_api_get_category_contracts",
+ *          parameters = { "id" = "expr(object.getId())" },
+ *          absolute=true
+ *      ),
+ *     exclusion=@Hateoas\Exclusion(
+ *          maxDepth=1,
+ *     )
+ * )
  */
 class Category
 {
@@ -19,11 +69,16 @@ class Category
      * @ORM\Column(type="integer")
      * @ORM\Id
      * @ORM\GeneratedValue
+     * @Serializer\Expose()
+     * @Serializer\Groups({"list", "detail"})
      */
     private $id;
 
     /**
-     * @ORM\Column(length=64)
+     * @ORM\Column(length=64, nullable=false)
+     * @Assert\NotNull()
+     * @Serializer\Expose()
+     * @Serializer\Groups({"list", "detail"})
      */
     private $title;
 

@@ -1,0 +1,17 @@
+swop_budget_api_category:
+    type: rest
+    resource: "@SowpBudgetBundle/Controller/CategoryRestController.php"
+#    prefix: categories
+    name_prefix: sowp_budget_category_api_
+
+swop_budget_api_contract:
+    type: rest
+    resource: "@SowpBudgetBundle/Controller/ContractRestController.php"
+#    prefix: categories
+    name_prefix: sowp_budget_contract_api_
+
+swop_budget_api_root:
+    type: rest
+    resource: "@SowpBudgetBundle/Controller/RootApiController.php"
+#    prefix: categories
+    name_prefix: sowp_budget_api_root_

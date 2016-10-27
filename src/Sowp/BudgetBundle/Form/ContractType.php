@@ -2,13 +2,24 @@
 
 namespace Sowp\BudgetBundle\Form;
 
+use Doctrine\Common\Persistence\ObjectManager;
+use FOS\RestBundle\Form\Transformer\EntityToIdObjectTransformer;
+use Sowp\BudgetBundle\Entity\Category;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class ContractType extends AbstractType
 {
+    private $om;
+
+    public function __construct(ObjectManager $om)
+    {
+        $this->om = $om;
+    }
+
     /**
      * @param FormBuilderInterface $builder
      * @param array $options
@@ -30,7 +41,12 @@ class ContractType extends AbstractType
             ->add('value');
 
         if($options['with_category']){
-            $builder->add('category');
+            if(!$options['api']){
+                $builder->add('category');
+            }else{
+                $categoryTransformer = new EntityToIdObjectTransformer($this->om, Category::class);
+                $builder->add($builder->create('category', TextType::class)->addModelTransformer($categoryTransformer));
+            }
         }
 
     }
@@ -43,6 +59,7 @@ class ContractType extends AbstractType
         $resolver->setDefaults([
             'data_class' => 'Sowp\BudgetBundle\Entity\Contract',
             'with_category' => true,
+            'api' => false,
         ]);
     }
 }

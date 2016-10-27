@@ -2,6 +2,7 @@
 
 namespace Sowp\BudgetBundle\Repository;
 
+use Doctrine\ORM\QueryBuilder;
 use Gedmo\Tree\Entity\Repository\NestedTreeRepository;
 use Sowp\BudgetBundle\Entity\Category;
 use Sowp\BudgetBundle\Entity\Contract;
@@ -41,4 +42,14 @@ class CategoryRepository extends NestedTreeRepository
         return $this->getContractsInCategoryQuery($category)->getResult();
     }
 
+    public function findByIdWithChildren($id){
+        $qb = $this->createQueryBuilder('c');
+        $qb->leftJoin('c.children', 'ch');
+        $qb->where($qb->expr()->eq('c.id', $id));
+        return $qb->getQuery()->getOneOrNullResult();
+    }
+
+    public function filterOnlyRoot(QueryBuilder $qb){
+        $qb->andWhere('a.parent is NULL');
+    }
 }

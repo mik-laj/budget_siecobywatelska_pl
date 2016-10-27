@@ -1,0 +1,13 @@
+default:
+    extensions:
+        Behat\Symfony2Extension: ~
+        Behat\MinkExtension:
+            base_url: http://www.google.com
+            sessions:
+                default:
+                    symfony2: ~
+    suites:
+        default:
+          contexts:
+            - FeatureContext:
+                - guzzle: { base_uri: "http://127.0.0.1:8000" }

@@ -2,6 +2,10 @@ sowp_budget_contract:
     resource: "@SowpBudgetBundle/Controller/ContractController.php"
     type:     annotation
 
+NelmioApiDocBundle:
+    resource: "@NelmioApiDocBundle/Resources/config/routing.yml"
+    prefix:   /api/doc
+
 sowp_budget:
     resource: "@SowpBudgetBundle/Resources/config/routing.yml"
     prefix:   /
