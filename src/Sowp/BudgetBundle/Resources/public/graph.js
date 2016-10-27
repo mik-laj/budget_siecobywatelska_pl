@@ -49,16 +49,66 @@ class Graph{
             .attr('fill-rule', 'evenodd')
             .style('fill', d => d.color_bg)
             .style('opacity', 1)
-            .on('click', d => this.listener(d));
+            .on('click', d => this.listener(d))
+            .each(function(d,i) {
+                //Search pattern for everything between the start and the first capital L
+                var firstArcSection = /(^.+?)L/;
 
+                //Grab everything up to the first Line statement
+                var newArc = firstArcSection.exec( d3.select(this).attr("d") )[1];
+                //Replace all the commas so that IE can handle it
+                newArc = newArc.replace(/,/g , " ");
+
+                //If the end angle lies beyond a quarter of a circle (90 degrees or pi/2)
+                //flip the end and start position
+                if (d.endAngle > 90 * Math.PI/180) {
+                    var startLoc 	= /M(.*?)A/,		//Everything between the capital M and first capital A
+                        middleLoc 	= /A(.*?)0 0 1/,	//Everything between the capital A and 0 0 1
+                        endLoc 		= /0 0 1 (.*?)$/;	//Everything between the 0 0 1 and the end of the string (denoted by $)
+                    //Flip the direction of the arc by switching the start and end point (and sweep flag)
+                    var newStart = endLoc.exec( newArc )[1];
+                    var newEnd = startLoc.exec( newArc )[1];
+                    var middleSec = middleLoc.exec( newArc )[1];
+
+                    //Build up the new arc notation, set the sweep-flag to 0
+                    newArc = "M" + newStart + "A" + middleSec + "0 0 0 " + newEnd;
+                }//if
+
+                //Create a new invisible arc that the text can flow along
+                d3.select(this).append('path')
+                    .attr('class', 'hiddenDonutArcs')
+                    .attr('id', () => 'arc' + i)
+                    .attr('d', newArc)
+                    .style('fill', 'none');
+            });
+
+        // entering.append('text')
+        //     .attr('fill', d=> d.color_text)
+        //     .attr('dy', '.35em')
+        //     .attr('font-size', '10')
+        //     .attr('text-anchor', 'middle')
+        //     .on('click', d => this.listener(d))
+        //     .attr("transform", d => `translate(${this.arc.centroid(d)}) rotate(${computeTextRotation(d)})`)
+        //     .text(function(d) { return d.title; })
         entering.append('text')
             .attr('fill', d=> d.color_text)
-            .attr('dy', '.35em')
             .attr('font-size', '10')
-            .attr('text-anchor', 'middle')
-            .on('click', d => this.listener(d))
-            .attr("transform", d => `translate(${this.arc.centroid(d)}) rotate(${computeTextRotation(d)})`)
-            .text(function(d) { return d.title; })
+            .attr('dy', '20px')
+            .attr('dx', '5px')
+            .append('textPath')
+            .attr('startOffset', '50%')
+            .style('text-anchor', 'middle')
+            .attr('xlink:href', (d,i) => "#arc" + i)
+            .text(d => d.title);
+
+        // entering.append('text')
+        //     .attr('fill', d=> d.color_text)
+        //     .attr('dy', '.35em')
+        //     .attr('font-size', '10')
+        //     .attr('text-anchor', 'middle')
+        //     .on('click', d => this.listener(d))
+        //     .attr("transform", d => `translate(${this.arc.centroid(d)}) rotate(${computeTextRotation(d)})`)
+        //     .text(function(d) { return d.title; })
     }
 
     setOnCategoryClickListener(fn){
