@@ -59,6 +59,25 @@
         border-left-color: #808080;
         border-bottom-color: #808080;
     }
+    .block-category{
+        margin-bottom: 15px;
+        font-weight: bold;
+    }
+    .block-title{
+        color: black;
+    }
+        .block-title:after{
+            content: '';
+            display: block;
+            width: 50px;
+            height: 2px;
+            background-color: #808080;
+            margin-top: 30px;
+            margin-bottom: 30px;
+        }
+        .text-highlight{
+            color: #d72626;
+        }
 
     </style>
 {% endblock %}
@@ -77,6 +96,27 @@
     <div id="contracts">
         <div id="contract-list"></div>
         <div id="contract-pagination"></div>
+    </div>
+    <div style="display: none">
+        <div id="contract-template">
+            <div class="contract">
+                <div class="block-category">
+                    <img src="http://siecobywatelska.pl/wp-content/themes/roots/assets/img/icons/doc.png" alt="Dokumentacja" style="display: inline-block; margin-right: 25px;">
+                    <span class="contract-category"></span>
+
+                </div>
+                <div class="block-title">
+                    <div class="contract-supplier" style="font-size: 23px;"></div>
+                </div>
+                <p class="contract-title"></p>
+                <p>
+                    Wartość:
+                    <span class="text-highlight">
+                        <span class="contract-value"></span> zł
+                    </span>
+                </p>
+            </div>
+        </div>
     </div>
 {% endblock %}
 

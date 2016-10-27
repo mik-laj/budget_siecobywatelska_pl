@@ -220,13 +220,7 @@ class List{
     constructor(el) {
         this.list = d3.select(el).append('ul').classed('contract-list', true);
         this.proto_row = document.createElement('li');
-        this.proto_row.innerHTML = `
-            <div class="contract">
-                <div class="contract-category"></div>
-                <div class="contract-supplier"></div>
-                <div class="contract-title"></div>
-                <div class="contract-value"></div>
-            </div>`;;
+        this.proto_row.innerHTML = document.querySelector('#contract-template').innerHTML;
     }
 
 
